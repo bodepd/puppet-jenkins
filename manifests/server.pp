@@ -69,5 +69,5 @@ define jenkins::server (
 
   Class['jenkins::repo'] ->
   Class['jenkins::package'] ->
-  Class['jenkins::service'] ->
+  Class['jenkins::service']
 }
