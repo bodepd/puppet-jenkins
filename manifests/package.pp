@@ -4,5 +4,8 @@ class jenkins::package (
   package {
     'jenkins':
       ensure => $version,
+  } ->
+  user { 'jenkins':
+    ensure => present,
   }
 }
