@@ -43,23 +43,24 @@ define jenkins::server (
   if $setup_auth {
     file { "${home_dir}/config.xml":
       source => 'puppet:///modules/jenkins/config.xml',
-      require => Class['jenkins::service'],
+      notify => Class['jenkins::service'],
     }
     file { ["${home_dir}/users", "${home_dir}/users/jenkins_user"]:
       ensure => directory,
-      require => Class['jenkins::service'],
+      require => Class['jenkins::package'],
     }
     file { "${home_dir}/users/jenkins_user/config.xml":
       source => 'puppet:///modules/jenkins/jenkins_user_config.xml',
-      require => Class['jenkins::service'],
+      notify => Class['jenkins::service'],
     }
     $jenkins_url  = 'http://127.0.0.1:8080/'
     $cli_jar_path = '/var/cache/jenkins/war/WEB-INF/jenkins-cli.jar'
+    $reload_cmd   = 'reload-configuration'
     exec { 'reload_account_config':
-      command     => "/usr/bin/java -jar ${cli_jar_path} -s ${jenkins_url} reload-configuration",
+      command     => "/usr/bin/java -jar ${cli_jar_path} -s ${jenkins_url} ${reload_cmd}",
       refreshonly => true,
       # this seems to allways return 1, even when successful
-      returns     => [0,1],
+      # returns     => [0,1],
       subscribe   => File["${home_dir}/config.xml", "${home_dir}/users/jenkins_user/config.xml"]
     }
   }
