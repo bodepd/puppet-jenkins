@@ -9,6 +9,8 @@ class jenkins::job_builder (
   $password = '',
 ) {
 
+  include pip
+
   # A lot of things need yaml, be conservative requiring this package to avoid
   # conflicts with other modules.
   if ! defined(Package['python-yaml']) {
@@ -19,12 +21,6 @@ class jenkins::job_builder (
 
   if ! defined(Package['python-jenkins']) {
     package { 'python-jenkins':
-      ensure => present,
-    }
-  }
-
-  if ! defined(Package['python-setuptools']) {
-    package { 'python-setuptools':
       ensure => present,
     }
   }
@@ -42,6 +38,7 @@ class jenkins::job_builder (
     path        => '/bin:/usr/bin',
     refreshonly => true,
     subscribe   => Vcsrepo['/opt/jenkins_job_builder'],
+    require     => Class['pip'],
   }
 
   file { '/etc/jenkins_jobs':
