@@ -18,7 +18,7 @@ define jenkins::server (
   $version = 'installed',
   $site_alias = undef,
   $setup_auth = false,
-  $home_dir   = '/var/lib/jenkins'
+  $home_dir   = '/var/lib/jenkins',
 ) {
 
   if ($site_alias) {

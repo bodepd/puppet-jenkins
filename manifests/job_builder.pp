@@ -46,7 +46,7 @@ class jenkins::job_builder (
   }
 
   exec { 'jenkins_jobs_update':
-    command     => 'jenkins-jobs update /etc/jenkins_jobs/config',
+    command     => 'sleep 120 && jenkins-jobs update /etc/jenkins_jobs/config',
     path        => '/bin:/usr/bin:/usr/local/bin',
     refreshonly => true,
     require     => [
