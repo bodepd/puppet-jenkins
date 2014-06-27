@@ -7,6 +7,17 @@
 
              CustomLog ${APACHE_LOG_DIR}/<%= scope.lookupvar("::jenkins::master::vhost_name") %>-access.log combined
 
+<% if @ssl_key_file_contents == '' -%>
+             RewriteEngine on
+             RewriteCond %{HTTP_HOST} !<%= scope.lookupvar("::jenkins::master::vhost_name") %>
+             RewriteRule ^.*$ https://<%= scope.lookupvar("::jenkins::master::vhost_name") %>/
+
+             RewriteRule /zuul/status http://127.0.0.1:8001/status [P]
+
+             ProxyPass / http://127.0.0.1:8080/ retry=0
+             ProxyPassReverse / http://127.0.0.1:8080/
+</VirtualHost>
+<% else -%>
              Redirect / https://<%= scope.lookupvar("::jenkins::master::vhost_name") %>/
 
 </VirtualHost>
@@ -44,3 +55,4 @@
              ProxyPass / http://127.0.0.1:8080/ retry=0
              ProxyPassReverse / http://127.0.0.1:8080/
 </VirtualHost>
+<% end -%>
